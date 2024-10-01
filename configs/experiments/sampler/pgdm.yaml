@@ -1,0 +1,7 @@
+name: pgdm
+nsteps: 1000
+nsamples: 1
+
+# pgdm doesn't have parameters
+# use yaml flow mapping to set empty `parameters`
+parameters: {}

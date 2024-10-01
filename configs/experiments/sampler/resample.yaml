@@ -1,0 +1,60 @@
+# Task depend config were taken from
+# https://github.com/soominkwon/resample/tree/main/configs/tasks
+name: resample
+nsteps: 500
+nsamples: 1
+
+# default setup taken from ReSample
+parameters:
+  max_optimization_iters: 200
+  sigma_scale: 40
+  scale: 0.3
+
+# task dependent parameters
+# NOTE: Even thought ``scale`` parameter is suggested by the authors,
+# it is never used in the code
+context_parameters:
+  task:
+    # Super Resolution
+    sr4:
+      scale: 0.1
+      max_optimization_iters: 200
+      sigma_scale: 80
+    sr16:
+      scale: 0.1
+      max_optimization_iters: 200
+      sigma_scale: 90
+    # inpaiting
+    outpainting_half:
+      scale: 0.5
+      max_optimization_iters: 200
+      sigma_scale: 60
+    outpainting_bottom:
+      scale: 0.5
+      max_optimization_iters: 200
+      sigma_scale: 70
+    outpainting_top:
+      scale: 0.5
+      max_optimization_iters: 200
+      sigma_scale: 70
+    inpainting_center:
+      max_optimization_iters: 200
+      sigma_scale: 80
+      scale: 0.5
+    # blur
+    blur:
+      scale: 0.5
+      max_optimization_iters: 200
+      sigma_scale: 60
+    blur_svd:
+      scale: 0.5
+      max_optimization_iters: 200
+      sigma_scale: 60
+    motion_blur:
+      scale: 1.0
+      max_optimization_iters: 200
+      sigma_scale: 80
+    nonlinear_blur:
+      scale: 0.3
+      max_optimization_iters: 200
+      sigma_scale: 70

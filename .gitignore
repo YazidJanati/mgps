@@ -1,0 +1,13 @@
+.DS_Store
+
+# python build
+build
+**/**.egg-info
+
+# python cache
+__pycache__
+__cache__
+.pytest_cache
+
+# hydra outputs
+**/outputs/**

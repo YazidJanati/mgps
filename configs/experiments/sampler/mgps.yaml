@@ -1,0 +1,93 @@
+name: mgps
+nsteps: 300
+nsamples: 1
+max_alpha: .5
+alpha: .5
+
+#default configuration
+parameters:
+  lr: 3e-2
+  optimizer: 'adam'
+  threshold: 700
+  display_im: False
+  alpha_fn: 
+    conditions: 
+      - condition: "default"
+        return: ${sampler.alpha}
+
+  gradient_steps_fn:
+    conditions:
+      - condition: "i <= 20"
+        return: 2
+      - condition: "i >= n_steps - 10"
+        return: 10
+      - condition: "i % 10 == 0"
+        return: 2
+      - condition: "default"
+        return: 2
+
+#dataset dependent parameters
+context_parameters:
+  dataset:
+    gmm:
+      threshold: 2000  # disable warm
+      lr: 1e-1
+      gradient_steps_fn:
+        conditions:
+          - condition: "i <= 20"
+            return: 2
+          - condition: "i >= n_steps - 10"
+            return: 20
+          - condition: "i % 10 == 0"
+            return: 20
+          - condition: "default"
+            return: 2
+
+    ffhq:
+      gradient_steps_fn:
+        conditions:
+          - condition: "i <= 20"
+            return: 2
+          - condition: "i >= n_steps - 5"
+            return: 20
+          - condition: "i % 10 == 0"
+            return: 20
+          - condition: "default"
+            return: 2
+
+    ffhq_ldm:
+      alpha_fn: 
+        conditions: 
+          - condition: "i <= 500"
+            return: 1
+          - condition: "default"
+            return: ${sampler.alpha}
+  
+      gradient_steps_fn:
+        conditions:
+          - condition: "i <= 10"
+            return: 2
+          - condition: "i >= n_steps - 5"
+            return: 20
+          - condition: "i % 10 == 0"
+            return: 10
+          - condition: "default"
+            return: 5
+
+    imagenet:
+      alpha_fn: 
+        conditions: 
+          - condition: "i <= 500"
+            return: ${sampler.max_alpha}
+          - condition: "default"
+            return: ${sampler.alpha}
+      gradient_steps_fn:
+        conditions:
+          - condition: "i <= 10"
+            return: 2
+          - condition: "i >= n_steps - 5"
+            return: 20
+          - condition: "i % 20 == 0"
+            return: 10
+          - condition: "default"
+            return: 2

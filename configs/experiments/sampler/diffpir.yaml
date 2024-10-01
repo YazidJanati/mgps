@@ -1,0 +1,43 @@
+name: diffpir
+nsteps: 1000
+nsamples: 1
+
+parameters:
+  lmbd: 1.0
+  zeta: 1.0
+  n_reps: 1
+
+context_parameters:
+  task:
+    # inpainting
+    inpainting_middle:
+      lmbd: 1.0
+      zeta: 1.0
+    inpainting_center:
+      lmbd: 1.0
+      zeta: 1.0
+    outpainting_half:
+      lmbd: 1.0
+      zeta: 1.0
+    outpainting_bottom:
+      lmbd: 1.0
+      zeta: 1.0
+    outpainting_top:
+      lmbd: 1.0
+      zeta: 1.0
+    # sr
+    sr4:
+      lmbd: 1.0
+      zeta: 0.1
+    sr16:
+      lmbd: 1.0
+      zeta: 0.1
+    blur:
+      lmbd: 1.0
+      zeta: 0.1
+    blur_svd:
+      lmbd: 1.0
+      zeta: 0.1
+    motion_blur:
+      lmbd: 1.0
+      zeta: 0.1

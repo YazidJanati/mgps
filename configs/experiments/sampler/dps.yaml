@@ -1,0 +1,37 @@
+name: dps
+nsteps: 1000
+nsamples: 1
+
+parameters:
+  gamma: .1
+
+context_parameters:
+  task:
+    linear: 
+      gamma: .1
+    sr4:
+      gamma: 1.
+    sr16:
+      gamma: 1.
+    phase_retrieval:
+      gamma: .4
+    motion_blur:
+      gamma: .3
+    blur:
+      gamma: .3
+    blur_svd:
+      gamma: .3
+    outpainting_half:
+      gamma: 1.
+    outpainting_bottom:
+      gamma: 1.
+    inpainting_center:
+      gamma: 1.
+    outpainting_top:
+      gamma: 1.
+    nonlinear_blur:
+      gamma: .1
+    high_dynamic_range:
+      gamma: 0.07
+    jpeg2:
+      gamma: 0.2

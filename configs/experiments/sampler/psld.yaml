@@ -1,0 +1,44 @@
+name: psld
+nsteps: 1000
+nsamples: 1
+
+parameters:
+  gamma: 0.1
+  omega: 0.1
+
+# task dependent parameters
+context_parameters:
+  task:
+    # super resolution
+    sr4:
+      gamma: 0.1
+      omega: 0.9
+    sr16:
+      gamma: 0.1
+      omega: 0.9
+    # blur
+    blur:
+      gamma: 0.1
+      omega: 0.1
+    blur_svd:
+      gamma: 0.1
+      omega: 0.1
+    motion_blur:
+      gamma: 0.1
+      omega: 0.1
+    # inpainting
+    inpainting_middle:
+      gamma: 0.1
+      omega: 0.1
+    inpainting_center:
+      gamma: 0.1
+      omega: 0.1
+    outpainting_half:
+      gamma: 0.1
+      omega: 0.1
+    outpainting_bottom:
+      gamma: 0.1
+      omega: 0.1
+    outpainting_top:
+      gamma: 0.1
+      omega: 0.1

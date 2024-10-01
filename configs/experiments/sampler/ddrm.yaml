@@ -1,0 +1,8 @@
+name: ddrm
+nsteps: 200
+nsamples: 1
+
+parameters:
+  etaB: 1.0
+  etaA: 0.85
+  etaC: 1.0
