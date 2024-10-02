@@ -40,7 +40,7 @@ import matplotlib.pyplot as plt
 from local_paths import REPO_PATH
 
 
-device = "cuda:1"
+device = "cuda:0"
 torch.set_default_device(device)
 torch.cuda.empty_cache()
 
@@ -52,7 +52,7 @@ class test:
     sampler = "mgps"
     nsteps = 50
     dataset = "ffhq"
-    im_idx = "00223"
+    im_idx = "00018"
     task = "outpainting_half"
     std = 0.05  # 0.05
     nsamples = 1

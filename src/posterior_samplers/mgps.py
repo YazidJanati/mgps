@@ -5,7 +5,6 @@ from typing import Callable
 
 from posterior_samplers.diffusion_utils import EpsilonNet
 from posterior_samplers.diffusion_utils import sample_bridge_kernel
-from posterior_samplers.dcps import normalized_grad_step
 from posterior_samplers.diffusion_utils import bridge_kernel_statistics
 
 from utils.utils import display
@@ -324,3 +323,25 @@ def kl_mvn(
         + (torch.norm(v_mean - mean) ** 2.0 + (2.0 * v_logstd).exp().sum())
         / (2.0 * logstd).exp()
     )
+
+
+@torch.no_grad()
+def normalized_grad_step(var: torch.Tensor, var_grad: torch.Tensor, lr: float):
+    """Apply a normalized gradient step on ``var``.
+
+    Formula of the update::
+
+        var = var - (lr / norm(grad)) * grad
+
+    Note
+    ----
+    ``var`` must a be a leaf tensor with ``requires_grad=True``
+    """
+    # NOTE this is the eps used in Adam solver to prevent denominator from being zero
+    eps = 1e-8
+    n_samples = var.shape[0]
+    shape = (n_samples, *(1,) * len(var.shape[1:]))
+
+    grad_norm = torch.norm(var_grad.reshape(n_samples, -1), dim=-1).reshape(*shape)
+
+    return var - (lr / (eps + grad_norm)) * var_grad

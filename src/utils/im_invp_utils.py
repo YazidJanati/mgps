@@ -13,7 +13,7 @@ from ddrm.functions.svd_replacement import H_functions
 from utils.DiffJPEG.utils import quality_to_factor, diff_round
 from utils.DiffJPEG.compression import compress_jpeg
 from utils.DiffJPEG.decompression import decompress_jpeg
-from local_paths import REPO_PATH, LARGE_FILE_DIR
+from local_paths import REPO_PATH
 from PIL import Image
 import math
 from utils.DiffJPEG.DiffJPEG import DiffJPEG
@@ -101,7 +101,7 @@ def generate_invp(
     """
     ip_type = "jpeg" if task.startswith("jpeg") else "linear"
     im_dir = REPO_PATH / "assets"
-    image = Image.open(im_dir / f"{model}/validation_set/{im_idx}")
+    image = Image.open(im_dir / f"images/{model}/{im_idx}")
 
     im = torch.tensor(np.array(image)).type(torch.FloatTensor).to(device)
 
