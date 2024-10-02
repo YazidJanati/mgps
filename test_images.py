@@ -47,23 +47,23 @@ torch.cuda.empty_cache()
 fix_seed(seed=620)
 
 
-@dataclass
-class test:
-    sampler = "mgps"
-    nsteps = 50
-    dataset = "ffhq"
-    im_idx = "00018"
-    task = "outpainting_half"
-    std = 0.05  # 0.05
-    nsamples = 1
-    alpha = 0.5
-    optimizer = "adam"
-    lr = 3e-2
-    gamma = 0.07
-    threshold = 700
+# @dataclass
+# class test:
+#     sampler = "dps"
+#     nsteps = 50
+#     dataset = "ffhq"
+#     im_idx = "00018"
+#     task = "outpainting_half"
+#     std = 0.05  # 0.05
+#     nsamples = 1
+#     alpha = 0.5
+#     optimizer = "adam"
+#     lr = 3e-2
+#     gamma = 0.07
+#     threshold = 700
 
 
-test_cfg = test()
+# test_cfg = test()
 
 
 @hydra.main(config_path="configs/experiments/", config_name="config")
@@ -87,7 +87,7 @@ def run_sampler(cfg: DictConfig):
     lpips, ssim, psnr = LPIPS(), SSIM(), PSNR()
 
     dataset = cfg.dataset.split("_ldm")[0]
-    im = test_cfg.im_idx + ".png" if dataset == "ffhq" else test_cfg.im_idx + ".jpg"
+    im = cfg.im_idx + ".png" if dataset == "ffhq" else cfg.im_idx + ".jpg"
     obs, obs_img, x_orig, H_func, ip_type, log_pot_fn = generate_invp(
         model=dataset,
         im_idx=im,
@@ -113,7 +113,7 @@ def run_sampler(cfg: DictConfig):
         obs=obs, H_func=H_fn, std=cfg.std, log_pot=log_pot, task=cfg.task
     )
 
-    initial_noise = torch.randn(test_cfg.nsamples, *shape)
+    initial_noise = torch.randn(cfg.nsamples, *shape)
     start_time = time.perf_counter()
     samples = sampler(
         initial_noise=initial_noise,
@@ -128,10 +128,10 @@ def run_sampler(cfg: DictConfig):
 
     samples = samples.clamp(-1.0, 1.0)
 
-    for i in range(test_cfg.nsamples):
+    for i in range(cfg.nsamples):
         display(
             samples[i],
-            title=f"{test_cfg.sampler}-{test_cfg.task}-{test_cfg.dataset}-reconstruction-{i}",
+            title=f"{cfg.sampler}-{cfg.task}-{cfg.dataset}-reconstruction-{i}",
         )
         plt.show()
 
@@ -139,7 +139,7 @@ def run_sampler(cfg: DictConfig):
 
     x_orig = x_orig.to(device)
 
-    print(f"{test_cfg.sampler} metrics")
+    print(f"{cfg.sampler} metrics")
     print(f"lpips: {lpips.score(samples, x_orig)}")
     print(f"ssim: {ssim.score(samples, x_orig)}")
     print(f"psnr: {psnr.score(samples, x_orig)}")
@@ -149,7 +149,7 @@ def run_sampler(cfg: DictConfig):
 
 
 # # XXX for interactive window
-sys.argv = [sys.argv[0], f"sampler={test_cfg.sampler}"]
+# sys.argv = [sys.argv[0], f"sampler={cfg.sampler}"]
 
 if __name__ == "__main__":
     run_sampler()

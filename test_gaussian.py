@@ -12,7 +12,7 @@ from utils.gauss_tmid.utils import (
     generate_cov,
     compute_W2_multivariate_normal,
 )
-from utils.gauss_tmid.g_mgps import mgps_ddpm_dps, conditional_ddpm
+from utils.gauss_tmid.g_mgps import mgps_ddpm_dps
 from utils.im_invp_utils import InverseProblem
 
 import matplotlib.pyplot as plt
@@ -82,7 +82,6 @@ mean, cov = mgps_ddpm_dps(
     alpha,
     type_conditional,
 )
-# mean, cov = conditional_ddpm(epsilon_net, inv_prob, alpha, eta=1.0)
 
 # approximate posterior
 approximate_posterior = MultivariateNormal(mean, cov)
@@ -90,7 +89,6 @@ posterior = PosteriorLinearInvProb(A, obs, obs_std, epsilon_net)
 
 # %%
 # plot results
-
 
 idx_x, idx_y = 0, 1
 # size of the markers in scatter plots
@@ -199,19 +197,6 @@ for i, type_backward in enumerate(("ddim", "exact")):
         results[type_conditional] = arr_kl
 
 
-# # conditional ddpm
-# print(f"{'conditional_ddpm':=^45}")
-# arr_kl = []
-# for alpha in arr_alphas:
-
-#     vmean, vvar = conditional_ddpm(epsilon_net, inv_prob, alpha)
-#     approximate_posterior = MultivariateNormal(vmean, vvar)
-
-#     arr_kl.append(metric(approximate_posterior, posterior))
-
-# results["conditional_ddpm"] = arr_kl
-
-
 # %%
 # plot results
 
@@ -225,14 +210,6 @@ for i, type_backward in enumerate(("ddim", "exact")):
         ax.plot(arr_alphas, results[type_conditional])
         ax.set_title(type_conditional)
         ax.set_yscale("log")
-
-
-# # plot conditional ddpm
-# ax = axes[1, 2]
-# ax.plot(arr_alphas, results["conditional_ddpm"])
-# ax.set_title("conditional_ddpm")
-# ax.set_yscale("log")
-
 
 fig.supxlabel("alpha")
 fig.supylabel(Config.metric_name)
