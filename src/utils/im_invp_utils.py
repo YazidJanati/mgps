@@ -74,11 +74,8 @@ def generate_invp(
     model: str,
     im_idx: str,
     task: str,
-    noise_type: str,
     obs_std: float,
-    poisson_rate: float,
     device: float,
-    im_dir=LARGE_FILE_DIR,
 ):
     """Generate inverse problem.
 
@@ -86,6 +83,8 @@ def generate_invp(
         - Inpainting:
             - inpainting_center
             - inpainting_middle
+            - outpainting_half
+            - outpainting_top
         - Blurring:
             - blur
             - blur_svd (SVD version of blur)
@@ -93,20 +92,15 @@ def generate_invp(
             - nonlinear_blur
         - JPEG dequantization
             - jpeg{QUALITY}
-        - Outpainting
-            - outpainting_bottom
-            - outpainting_expand
-            - outpainting_half
-            - outpainting_top
         - Super Resolution:
             - sr4
             - sr16
         - Others:
-            - colorization
             - phase_retrieval
             - high_dynamic_range
     """
     ip_type = "jpeg" if task.startswith("jpeg") else "linear"
+    im_dir = REPO_PATH / "assets"
     image = Image.open(im_dir / f"{model}/validation_set/{im_idx}")
 
     im = torch.tensor(np.array(image)).type(torch.FloatTensor).to(device)
@@ -129,20 +123,12 @@ def generate_invp(
 
     else:
         H_func = torch.load(
-            im_dir / f"masks_img256/{task}.pt",
+            im_dir / f"operators/{task}.pt",
             map_location=device,
         )
 
     obs = H_func.H(x_orig.unsqueeze(0))
-
-    if noise_type == "gaussian":
-        obs = obs + obs_std * torch.randn_like(obs)
-    elif noise_type == "poisson":
-        obs = torch.poisson(poisson_rate * ((obs + 1.0) / 2.0) * 255.0).clip(
-            0, poisson_rate * 255.0
-        )
-        obs = 2 * (obs / (poisson_rate * 255.0)) - 1.0
-
+    obs = obs + obs_std * torch.randn_like(obs)
     obs = obs.to(device)
 
     if task == "phase_retrieval":

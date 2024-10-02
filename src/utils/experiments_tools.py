@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 import json
 from omegaconf import OmegaConf
-from local_paths import REPO_PATH, LARGE_FILE_DIR
+from local_paths import REPO_PATH
 import torch
 import matplotlib.pyplot as plt
 import PIL

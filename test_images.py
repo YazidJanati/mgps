@@ -33,6 +33,7 @@ from utils.im_invp_utils import InverseProblem
 import yaml
 import hydra
 from omegaconf import DictConfig
+from utils.experiments_tools import save_experiment, fix_seed
 
 import matplotlib.pyplot as plt
 
@@ -40,15 +41,10 @@ from local_paths import REPO_PATH
 
 
 device = "cuda:1"
-seed = 620
-
 torch.set_default_device(device)
 torch.cuda.empty_cache()
 
-torch.manual_seed(seed)
-torch.cuda.manual_seed(seed)
-torch.backends.cudnn.enabled = False
-torch.backends.cudnn.deterministic = True
+fix_seed(seed=620)
 
 
 @dataclass
@@ -58,9 +54,7 @@ class test:
     dataset = "ffhq"
     im_idx = "00223"
     task = "outpainting_half"
-    noise_type = "gaussian"
     std = 0.05  # 0.05
-    poisson_rate = 0.1
     nsamples = 1
     alpha = 0.5
     optimizer = "adam"
@@ -98,9 +92,7 @@ def run_sampler(cfg: DictConfig):
         model=dataset,
         im_idx=im,
         task=cfg.task,
-        noise_type=cfg.noise_type,
         obs_std=cfg.std,
-        poisson_rate=cfg.poisson_rate,
         device=cfg.device,
     )
 
@@ -157,7 +149,9 @@ def run_sampler(cfg: DictConfig):
 
 
 # # XXX for interactive window
-# sys.argv = [sys.argv[0], f"sampler={test_cfg.sampler}"]
+sys.argv = [sys.argv[0], f"sampler={test_cfg.sampler}"]
 
 if __name__ == "__main__":
     run_sampler()
+
+# %%
