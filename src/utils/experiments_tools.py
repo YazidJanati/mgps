@@ -107,7 +107,7 @@ def save_experiment(save_folder, results, log_data):
         json.dump(log_data, f, indent=4)
 
 
-def save_im(x, save_path):
+def save_im(x, save_path, title=""):
     sample = x.squeeze(0).cpu().permute(1, 2, 0)
     sample = (sample + 1.0) * 127.5
     sample = sample.numpy().astype(np.uint8)
@@ -115,6 +115,6 @@ def save_im(x, save_path):
 
     fig, ax = plt.subplots(1, 1, figsize=(6, 6))
     ax.imshow(img_pil)
-    fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
+    ax.set_title(title)
     fig.savefig(save_path)
     plt.close()

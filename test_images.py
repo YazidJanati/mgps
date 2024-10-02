@@ -2,9 +2,6 @@
 # %load_ext autoreload
 # %autoreload 2
 
-from dataclasses import dataclass
-import sys
-import os
 import time
 import argparse
 from pathlib import Path
@@ -23,17 +20,15 @@ from posterior_samplers.ddrm import ddrm
 from posterior_samplers.reddiff import reddiff
 from posterior_samplers.psld import psld
 
-from utils.utils import display
-from utils.experiments_tools import update_sampler_cfg, get_gpu_memory_consumption
+from utils.experiments_tools import get_gpu_memory_consumption
 from utils.metrics import LPIPS, PSNR, SSIM
 from utils.im_invp_utils import generate_invp, Hsimple
-from posterior_samplers.diffusion_utils import EpsilonNetSVD
 from posterior_samplers.diffusion_utils import load_epsilon_net
 from utils.im_invp_utils import InverseProblem
 import yaml
 import hydra
 from omegaconf import DictConfig
-from utils.experiments_tools import save_experiment, fix_seed
+from utils.experiments_tools import fix_seed, save_im
 
 import matplotlib.pyplot as plt
 
@@ -47,27 +42,10 @@ torch.cuda.empty_cache()
 fix_seed(seed=620)
 
 
-# @dataclass
-# class test:
-#     sampler = "dps"
-#     nsteps = 50
-#     dataset = "ffhq"
-#     im_idx = "00018"
-#     task = "outpainting_half"
-#     std = 0.05  # 0.05
-#     nsamples = 1
-#     alpha = 0.5
-#     optimizer = "adam"
-#     lr = 3e-2
-#     gamma = 0.07
-#     threshold = 700
-
-
-# test_cfg = test()
-
-
 @hydra.main(config_path="configs/experiments/", config_name="config")
 def run_sampler(cfg: DictConfig):
+
+    save_im_path = REPO_PATH / "reconstructions"
 
     sampler = {
         "mgps": mgps_half,
@@ -96,8 +74,17 @@ def run_sampler(cfg: DictConfig):
         device=cfg.device,
     )
 
-    display(obs_img.detach().cpu(), title="Observation")
-    display(x_orig.cpu(), title="Ground-truth")
+    # save observation/ground truth
+    save_im(
+        obs_img.detach().cpu(),
+        save_path=save_im_path / "observation.png",
+        title="Observation",
+    )
+    save_im(
+        x_orig.cpu(),
+        save_path=save_im_path / "ground_truth.png",
+        title="Ground-truth",
+    )
 
     shape = (3, 64, 64) if cfg.dataset.endswith("ldm") else x_orig.shape
 
@@ -129,11 +116,11 @@ def run_sampler(cfg: DictConfig):
     samples = samples.clamp(-1.0, 1.0)
 
     for i in range(cfg.nsamples):
-        display(
+        save_im(
             samples[i],
-            title=f"{cfg.sampler}-{cfg.task}-{cfg.dataset}-reconstruction-{i}",
+            save_path=save_im_path / f"reconstruction_{i}.png",
+            title=f"{cfg.sampler.name}-{cfg.task}-{cfg.dataset}-reconstruction-{i}",
         )
-        plt.show()
 
     lpips, ssim, psnr = LPIPS(), SSIM(), PSNR()
 

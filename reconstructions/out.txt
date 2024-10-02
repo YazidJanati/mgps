@@ -1,0 +1,1 @@
+this folder will contain the output after running ``test_images.py``.
