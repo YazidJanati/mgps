@@ -23,32 +23,30 @@ For convenience, the code of these repositories were moved inside ``src`` folder
 - https://github.com/openai/guided-diffusion
 - https://github.com/NVlabs/RED-diff
 - https://github.com/mlomnitz/DiffJPEG
+- https://github.com/CompVis/latent-diffusion
 
 to avoid installation conflicts.
 
-
 ### Set configuration paths
 
-TODO
-  - path of repo
-  - path large files
-  - path of models weights
+Since we use the project path for cross referencing, namely open configuration files, ensure to define it in ``src/local_paths.py``
+
+After [downloading](#downloading-checkpoints) the models checkpoints, make sure to put the corresponding paths in the configuration files
+
+- Model checkoints
+  - ``configs/ffhq_model.yaml``
+  - ``configs/imagenet_model.yaml``
+  - ``configs/ffhq-ldm-vq-4.yaml``
+- Nonlinear blur
+  - ``src/nonlinear_blurring/option_generate_blur_default.yml``
 
 
-## Large files
+## Assets
 
-The models checkpoints, datasets were ignored as they contain large files.
-Make sure to create a folder ``large_files`` and download the right files and folders.
+We provide few images of FFHQ and Imagenet.
+Some of the degradation operator are provided as checkpoints to alleviate the initialization overhead.
 
-To avoid path conflict, ensure to insert in ``src/local_paths.py`` script
-
-- the absolute path of the repository
-- the path of the folder ``large_files``
-
-and update the ``model_path`` in the configuration files ``ffhq_model.yaml`` and ``imagenet_model.yaml``.
-
-The ``large_files`` folder have the following structure.
-Make sure to preserve it.
+These are located in ``assets/`` folder
 
 ```
   assets/
@@ -65,25 +63,56 @@ Make sure to preserve it.
 ```
 
 
-## A tour on the repository scripts
+## Reproduce experiments
 
-TODO
-- Provide description on the CLI for images
-- Running Experiments of Gaussian and t_mid
+We provide two scripts, ``test_images.py`` and ``test_gaussian.py`` to run the experiments.
 
+### Image restoration tasks
 
+In addition to our algorithm, several state-of-the-art algorithms are supported
+
+- mgps (ours)
+- diffpir
+- ddrm
+- ddnm
+- dps
+- pgdm
+- psld
+- reddiff
+- resample
+
+their hyperparameters are defined in ``configs/experiments/sampler/`` folder.
+
+we also support several imaging tasks
+
+- Inpainting:
+    - inpainting_center
+    - outpainting_half
+    - outpainting_top
+- Blurring:
+    - blur
+    - blur_svd (SVD version of blur)
+    - motion_blur
+    - nonlinear_blur
+- JPEG dequantization
+    - jpeg{QUALITY}
+- Super Resolution:
+    - sr4
+    - sr16
+- Others:
+    - phase_retrieval
+    - high_dynamic_range
+
+To run an experiment, execute
+
+```bash
+python test_images.py task=inpainting_center sampler=mgps dataset=ffhq device=cuda:0
+
+```
 
 ## Downloading checkpoints
 
 - [Imagnet](https://github.com/openai/guided-diffusion)
 - [FFHQ](https://github.com/DPS2022/diffusion-posterior-sampling)
-
-
-TODO add link to
-- latent FFHQ
-- non linear blur
-
-
-## TODO
-- Add images for ffhq and imagenet
-- Add degradation operators
+- FFHQ LDM: [denoiser](https://ommer-lab.com/files/latent-diffusion/ffhq.zip), [autoencoder](https://ommer-lab.com/files/latent-diffusion/vq-f4.zip)
+- [Nonlinear blur operator](https://drive.google.com/file/d/1xUvRmusWa0PaFej1Kxu11Te33v0JvEeL/view?usp=drive_link)
