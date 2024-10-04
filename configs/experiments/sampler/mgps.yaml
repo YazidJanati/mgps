@@ -9,7 +9,6 @@ parameters:
   lr: 3e-2
   optimizer: 'adam'
   threshold: 700
-  display_im: False
   alpha_fn: 
     conditions: 
       - condition: "default"

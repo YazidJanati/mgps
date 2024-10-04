@@ -15,8 +15,6 @@ def psld(
     gamma: float = 1.0,
     omega: float = 0.1,
     eta: float = 1.0,
-    display_im: bool = False,
-    display_freq: int = 20,
 ) -> Tensor:
     """PSLD algorithm as described in [1].
 
@@ -73,8 +71,8 @@ def psld(
         H_dot_decoded_z_0t = H_func.H(decoded_z_0t.view(n_samples, *x_shape))
 
         # compute errors
-        # NOTE: the official implementation of the algorithm uses norm (without square)
-        # yet the algorithm features the norm square
+        # NOTE: the autodiff of norm is grad 0.5 * || . ||^2 / || . ||
+        # hence the grad is implicitly normalized by its norm
         ll_error = torch.norm(obs - H_dot_decoded_z_0t)
         gluing_error = torch.norm(
             z_0t - encoder_fn(Ht_obs + decoded_z_0t - H_func.Ht(H_dot_decoded_z_0t))
@@ -90,10 +88,11 @@ def psld(
             )
             z_t = z_t - grad
 
-            if display_im and i % display_freq == 0:
-                for j in range(z_t.shape[0]):
-                    img = epsilon_net.predict_x0(z_t[[j]], t_prev)
-                    display(img.clamp(-1, 1))
+            # # XXX uncomment to view evolution of reconstructions
+            # if i % display_freq == 50:
+            #     for j in range(z_t.shape[0]):
+            #         img = epsilon_net.predict_x0(z_t[[j]], t_prev)
+            #         display(img.clamp(-1, 1))
 
     # last denoising step
     return epsilon_net.predict_x0(z_t, epsilon_net.timesteps[1])
