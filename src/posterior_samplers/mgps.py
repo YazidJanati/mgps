@@ -249,7 +249,7 @@ def mgps_vi_step(
     return x_tprev, pred_x0
 
 
-def mgps_half(
+def mgps(
     initial_noise: torch.Tensor,
     epsilon_net: EpsilonNet,
     inverse_problem: InverseProblem,
@@ -258,7 +258,6 @@ def mgps_half(
     optimizer: str,
     lr: float,
     threshold: float,
-    display_im: bool = False,
 ) -> torch.Tensor:
 
     log_pot = inverse_problem.log_pot
@@ -301,10 +300,9 @@ def mgps_half(
 
         # # XXX uncomment to view image process
         # if i % 20 == 0:
-        #     if display_im:
-        #         print(f"{i} / {n_steps}")
-        #         for j in range(n_samples):
-        #             display(pred_x0[j].clamp(-1, 1))
+        #     print(f"{i} / {n_steps}")
+        #     for j in range(n_samples):
+        #         display(pred_x0[j].clamp(-1, 1))
 
     return epsilon_net.predict_x0(x_tprev, epsilon_net.timesteps[1])
 
