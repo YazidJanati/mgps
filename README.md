@@ -1,9 +1,19 @@
-# VARIATIONAL DIFFUSION POSTERIOR SAMPLING WITH MIDPOINT GUIDANCE
+# Variational Diffusion Posterior Sampling With Midpoint Guidance
 
-[**Paper**]()
+[**Link to our Paper**]()
 
-The code of MGPS algorithm for solving Bayesian inverse problems with Diffusion models as prior.
-The algorithm solves linear and non-linear problems.
+The code of MGPS algorithm for solving Bayesian inverse problems with Diffusion Models as a prior.
+The algorithm handles linear and non-linear problems including those with Latent Diffusion Models (LDM) priors. 
+
+<div align="center">
+  <img src="material/all-datasets.png" />
+</div>
+
+- 1st and 2nd row: FFHQ
+- 3rd and 4th row: Imagenet
+- 5th and 6th row: LDM on FFHQ 
+
+See the appendix of our paper for more examples.
 
 
 ## Code installation
@@ -71,40 +81,19 @@ We provide two scripts, ``test_images.py`` and ``test_gaussian.py`` to run the e
 ### Image restoration tasks
 
 In addition to our algorithm, several state-of-the-art algorithms are supported
-
-- mgps (ours)
-- diffpir
-- ddrm
-- ddnm
-- dps
-- pgdm
-- psld
-- reddiff
-- resample
+``"mgps"`` (ours), ``"diffpir"``, ``"ddrm"``, ``"ddnm"``, ``"dps"``, ``"pgdm"``, ``"psld"``, ``"reddiff"``, ``"resample"``.
 
 their hyperparameters are defined in ``configs/experiments/sampler/`` folder.
 
 we also support several imaging tasks
 
-- Inpainting:
-    - inpainting_center
-    - outpainting_half
-    - outpainting_top
-- Blurring:
-    - blur
-    - blur_svd (SVD version of blur)
-    - motion_blur
-    - nonlinear_blur
-- JPEG dequantization
-    - jpeg{QUALITY} (Quality is an integer in [1,99], example 'jpeg2')
-- Super Resolution:
-    - sr4
-    - sr16
-- Others:
-    - phase_retrieval
-    - high_dynamic_range
+- **Inpainting**: ``"inpainting_center"``, ``"outpainting_half"``, ``"outpainting_top"``
+- **Blurring**: ``"blur"``,  ``"blur_svd"`` (SVD version of blur), ``"motion_blur"``,  ``"nonlinear_blur"``,
+- **JPEG dequantization**:  ``"jpeg{QUALITY}"`` (Quality is an integer in [1, 99], example ``"jpeg2"``)
+- **Super Resolution**: ``"sr4"``, ``"sr16"``
+- **Others**: ``"phase_retrieval"``, ``"high_dynamic_range"``
 
-To run an experiment, execute 
+To run an experiment, execute the following command
 
 ```bash
 python test_images.py task=inpainting_center sampler=mgps dataset=ffhq device=cuda:0
