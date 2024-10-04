@@ -1,5 +1,7 @@
 # VARIATIONAL DIFFUSION POSTERIOR SAMPLING WITH MIDPOINT GUIDANCE
 
+[**Paper**]()
+
 The code of MGPS algorithm for solving Bayesian inverse problems with Diffusion models as prior.
 The algorithm solves linear and non-linear problems.
 
@@ -17,7 +19,7 @@ pip install -e .
 This command will also download the code dependencies.
 Further details about dependencies are in ``setup.py``.
 
-For convenience, the code of these repositories were moved inside ``src`` folder
+For convenience, the code of these repositories were moved inside ``src`` folder to avoid installation conflicts.
 
 - https://github.com/bahjat-kawar/ddrm
 - https://github.com/openai/guided-diffusion
@@ -25,11 +27,10 @@ For convenience, the code of these repositories were moved inside ``src`` folder
 - https://github.com/mlomnitz/DiffJPEG
 - https://github.com/CompVis/latent-diffusion
 
-to avoid installation conflicts.
 
 ### Set configuration paths
 
-Since we use the project path for cross referencing, namely open configuration files, ensure to define it in ``src/local_paths.py``
+Since we use the project path for cross referencing, namely open configuration files, ensure to define it in ``src/local_paths.py`` (copy/paste the output of ``pwd`` command)
 
 After [downloading](#downloading-checkpoints) the models checkpoints, make sure to put the corresponding paths in the configuration files
 
@@ -44,7 +45,7 @@ After [downloading](#downloading-checkpoints) the models checkpoints, make sure 
 ## Assets
 
 We provide few images of FFHQ and Imagenet.
-Some of the degradation operator are provided as checkpoints to alleviate the initialization overhead.
+Some of the degradation operator are also provided as checkpoints to alleviate the initialization overhead.
 
 These are located in ``assets/`` folder
 
@@ -95,7 +96,7 @@ we also support several imaging tasks
     - motion_blur
     - nonlinear_blur
 - JPEG dequantization
-    - jpeg{QUALITY}
+    - jpeg{QUALITY} (Quality is an integer in [1,99], example 'jpeg2')
 - Super Resolution:
     - sr4
     - sr16
@@ -103,12 +104,16 @@ we also support several imaging tasks
     - phase_retrieval
     - high_dynamic_range
 
-To run an experiment, execute
+To run an experiment, execute 
 
 ```bash
 python test_images.py task=inpainting_center sampler=mgps dataset=ffhq device=cuda:0
-
 ```
+
+### Gaussian case with midpoint guidance
+
+Use the script ``test_gaussian.py`` to run the experiment of Gaussian case with midpoint guidance as described in Example 3.2.
+
 
 ## Downloading checkpoints
 
