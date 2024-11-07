@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 
 
 torch.manual_seed(135)
-dim = 2
+dim = 100
 dtype = torch.float64
 torch.set_default_dtype(dtype)
 
@@ -35,7 +35,7 @@ class Config:
     mean = torch.zeros(size=(dim,), dtype=dtype)
     cov = generate_cov(dim)
     obs_std = 1e-1
-    A = torch.randn(size=(dim, dim), dtype=dtype)
+    A = torch.randn(size=(dim // 2, dim), dtype=dtype)
     n_steps = 300
     metric_name = "W2"
 
@@ -68,12 +68,12 @@ ax.legend()
 ax.set_title("Prior")
 
 # %%
-# solve the problem
+# View approximate true and approximate posterior distributions
 
 colors = {"true post": "orange", "approx post": "green"}
 
-type_conditional = "ddim+dps"
-# type_conditional = "exact+exact"
+# solve the problem
+type_conditional = "ddim+dps"  # "exact+exact"
 alpha = 0.7
 
 mean, cov = mgps_ddpm_dps(
@@ -87,10 +87,9 @@ mean, cov = mgps_ddpm_dps(
 approximate_posterior = MultivariateNormal(mean, cov)
 posterior = PosteriorLinearInvProb(A, obs, obs_std, epsilon_net)
 
-# %%
-# plot results
-
+# plot results dimension idx_x and idx_y
 idx_x, idx_y = 0, 1
+
 # size of the markers in scatter plots
 s = 10
 
@@ -156,7 +155,6 @@ fig.suptitle(
     y=1.15,
 )
 
-# %%
 print(
     f"KL = {compute_kl(approximate_posterior, posterior)}\n"
     f"W2 = {compute_W2_multivariate_normal(approximate_posterior, posterior)}",
@@ -198,9 +196,8 @@ for i, type_backward in enumerate(("ddim", "exact")):
 
 
 # %%
-# plot results
-
-fig, axes = plt.subplots(2, 3, sharex=True, sharey="row")
+# plot metrics across different alphas and configuration
+fig, axes = plt.subplots(2, 2, sharex=True, sharey="row")
 
 for i, type_backward in enumerate(("ddim", "exact")):
     for j, type_potential in enumerate(("dps", "exact")):
@@ -215,6 +212,3 @@ fig.supxlabel("alpha")
 fig.supylabel(Config.metric_name)
 
 fig.suptitle(f"With {dim=}")
-
-
-# %%

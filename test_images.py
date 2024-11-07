@@ -3,17 +3,12 @@
 # %autoreload 2
 
 import time
-import argparse
-from pathlib import Path
-from omegaconf import OmegaConf
-import time
-
 import torch
 
 from posterior_samplers.dps import dps
 from posterior_samplers.ddnm import ddnm_plus
 from posterior_samplers.diffpir import diffpir
-from posterior_samplers.mgps import mgps_half
+from posterior_samplers.mgps import mgps
 from posterior_samplers.resample.algo import resample
 from posterior_samplers.pgdm import pgdm
 from posterior_samplers.ddrm import ddrm
@@ -25,12 +20,10 @@ from utils.metrics import LPIPS, PSNR, SSIM
 from utils.im_invp_utils import generate_invp, Hsimple
 from posterior_samplers.diffusion_utils import load_epsilon_net
 from utils.im_invp_utils import InverseProblem
-import yaml
+
 import hydra
 from omegaconf import DictConfig
 from utils.experiments_tools import fix_seed, save_im
-
-import matplotlib.pyplot as plt
 
 from local_paths import REPO_PATH
 
@@ -48,7 +41,7 @@ def run_sampler(cfg: DictConfig):
     save_im_path = REPO_PATH / "reconstructions"
 
     sampler = {
-        "mgps": mgps_half,
+        "mgps": mgps,
         "pgdm": pgdm,
         "dps": dps,
         "reddiff": reddiff,
@@ -127,12 +120,12 @@ def run_sampler(cfg: DictConfig):
     x_orig = x_orig.to(device)
 
     print(f"{cfg.sampler} metrics")
-    print(f"lpips: {lpips.score(samples, x_orig)}")
-    print(f"ssim: {ssim.score(samples, x_orig)}")
-    print(f"psnr: {psnr.score(samples, x_orig)}")
+    print(f"{'lpips':10}: {lpips.score(samples, x_orig)}")
+    print(f"{'ssim':10}: {ssim.score(samples, x_orig)}")
+    print(f"{'psnr':10}: {psnr.score(samples, x_orig)}")
     print("===================")
-    print(f"runtime: {end_time - start_time}")
-    print(f"GPU: {get_gpu_memory_consumption(device)}")
+    print(f"{'runtime':10}: {end_time - start_time}")
+    print(f"{'GPU':10}: {get_gpu_memory_consumption(device)}")
 
 
 # # XXX for interactive window
