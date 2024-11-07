@@ -106,7 +106,7 @@ we also support several imaging tasks
 To run an experiment, execute
 
 ```bash
-python test_images.py task=inpainting_center sampler=mgps dataset=ffhq device=cuda:0
+python test_images.py task=inpainting_center sampler=mgps sampler.nsteps=50 sampler.nsamples=1 dataset=ffhq im_idx="00018" device=cuda:0
 
 ```
 
