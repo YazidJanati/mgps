@@ -57,6 +57,7 @@ After [downloading](#downloading-checkpoints) the models checkpoints, make sure 
 We provide few images of FFHQ and Imagenet. The rest can be downloaded from:
 * [FFHQ](https://www.kaggle.com/datasets/dimensi0n/imagenet-256)
 * [ImageNet](https://www.kaggle.com/datasets/denislukovnikov/ffhq256-images-only)
+
 Some of the degradation operator are also provided as checkpoints to alleviate the initialization overhead.
 
 These are located in ``assets/`` folder
